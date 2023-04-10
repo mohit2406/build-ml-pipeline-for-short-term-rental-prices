@@ -26,6 +26,7 @@ def go(args):
     artifact_path = run.use_artifact(args.input_artifact).file()
     df = pd.read_csv(artifact_path)
 
+    # Drop outliers
     logger.info("Dropping outliers")
     idx = df['price'].between(args.min_price, args.max_price)
     df = df[idx].copy()
@@ -34,9 +35,6 @@ def go(args):
     logger.info("Converting last_review to datetime")
     df['last_review'] = pd.to_datetime(df['last_review'])
 
-    # Drop rows in the dataset that are not in the proper geolocation
-    idx = df['longitude'].between(-74.25, -73.50) & df['latitude'].between(40.5, 41.2)
-    df = df[idx].copy()
 
     # Save the cleaned dataset
     logger.info("Saving the output artifact")
